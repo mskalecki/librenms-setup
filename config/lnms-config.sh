@@ -17,14 +17,12 @@ sudo docker compose exec --user librenms librenms lnms config:cache
 sudo docker compose exec --user librenms librenms lnms config:set own_hostname "$hostname.$domain"
 
 # Comment out the block below if not using snmp_v3
-sudo docker compose exec --user librenms librenms lnms config:set snmp.v3.0 '{
-    "authalgo": "SHA",
-    "authlevel": "authPriv",
-    "authname": "$snmp_v3_user",
-    "authpass": "$snmp_v3_sha",
-    "cryptoalgo": "AES",
-    "cryptopass": "$snmp_v3_aes"
-}'
+sudo docker compose exec --user librenms librenms lnms config:set snmp.v3.0.authalgo "SHA"
+sudo docker compose exec --user librenms librenms lnms config:set snmp.v3.0.authlevel "authPriv"
+sudo docker compose exec --user librenms librenms lnms config:set snmp.v3.0.authname "$snmp_v3_user"
+sudo docker compose exec --user librenms librenms lnms config:set snmp.v3.0.authpass "$snmp_v3_sha"
+sudo docker compose exec --user librenms librenms lnms config:set snmp.v3.0.cryptoalgo "AES"
+sudo docker compose exec --user librenms librenms lnms config:set snmp.v3.0.cryptopass "$snmp_v3_aes"
 
 # snmp_v2
 sudo docker compose exec --user librenms librenms lnms config:set snmp.community $snmp_v2
@@ -45,6 +43,7 @@ sudo docker compose exec --user librenms librenms lnms config:set auth.socialite
 }'
 
 # https://docs.librenms.org/Extensions/Oxidized/
+sudo docker compose exec --user librenms librenms lnms config:set oxidized.enabled true
 sudo docker compose exec --user librenms librenms lnms config:set oxidized.default_group default
 sudo docker compose exec --user librenms librenms lnms config:set oxidized.group_support true
 sudo docker compose exec --user librenms librenms lnms config:set oxidized.reload_nodes true
