@@ -122,7 +122,7 @@ Configuration settings that control how LibreNMS operates live in the database a
 
     ```bash
     cd /var/librenms
-    sudo bash init-lnss-config.sh
+    sudo bash init-lnms-config.sh
     ```
 
 ## Verify that LibreNMS is online and create the initial admin
