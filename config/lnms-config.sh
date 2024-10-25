@@ -5,25 +5,35 @@ hostname="librenms"
 domain="<web_domain>"
 email_from="<web_domain>"
 nets='["10.0.0.0/8","172.16.0.0/12","192.168.0.0/16"]'
+snmp_v3_user=librenms
+snmp_v3_sha=<authsha>
+snmp_v3_aes=<cryptosha>
+snmp_v2='["public"]'
+# If the switches live in a different domain than the server, change the next line
 search_domain=$domain
 
 
 sudo docker compose exec --user librenms librenms lnms config:cache
 sudo docker compose exec --user librenms librenms lnms config:set own_hostname "$hostname.$domain"
 
+# Comment out the block below if not using snmp_v3
 sudo docker compose exec --user librenms librenms lnms config:set snmp.v3.0 '{
     "authalgo": "SHA",
     "authlevel": "authPriv",
-    "authname": "<username>",
-    "authpass": "<authpass>",
+    "authname": "$snmp_v3_user",
+    "authpass": "$snmp_v3_sha",
     "cryptoalgo": "AES",
-    "cryptopass": "<cryptopass>"
+    "cryptopass": "$snmp_v3_aes"
 }'
+
+# snmp_v2
+sudo docker compose exec --user librenms librenms lnms config:set snmp.community $snmp_v2
 
 # Discovery
 sudo docker compose exec --user librenms librenms lnms config:set nets $nets
 sudo docker compose exec --user librenms librenms lnms config:set mydomain $search_domain
 
+# Microsoft Entra SSO; private fields will be updated in Gui
 sudo docker compose exec --user librenms librenms lnms config:set auth.socialite.register true
 sudo docker compose exec --user librenms librenms lnms config:set auth.socialite.default_role none
 sudo docker compose exec --user librenms librenms lnms config:set auth.socialite.configs.microsoft '{
@@ -42,8 +52,8 @@ sudo docker compose exec --user librenms librenms lnms config:set oxidized.featu
 sudo docker compose exec --user librenms librenms lnms config:set oxidized.url http://oxidized.librenms_default:8888
 
 # msmtpd
-sudo docker compose exec --user librenms librenms lnms config:set email_smtp_host msmtpd
-sudo docker compose exec --user librenms librenms lnms config:set email_smtp_port 2500
-sudo docker compose exec --user librenms librenms lnms config:set email_auto_tls true
-sudo docker compose exec --user librenms librenms lnms config:set email_backend smtp
-#sudo docker compose exec --user librenms librenms lnms config:set email_from $email_from
+# sudo docker compose exec --user librenms librenms lnms config:set email_smtp_host msmtpd
+# sudo docker compose exec --user librenms librenms lnms config:set email_smtp_port 2500
+# sudo docker compose exec --user librenms librenms lnms config:set email_auto_tls true
+# sudo docker compose exec --user librenms librenms lnms config:set email_backend smtp
+# sudo docker compose exec --user librenms librenms lnms config:set email_from $email_from
