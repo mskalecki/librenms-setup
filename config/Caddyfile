@@ -1,0 +1,11 @@
+# ./Caddyfile
+<librenms_fqdn> {
+    reverse_proxy librenms:8000
+    encode gzip zstd
+
+    tls internal
+
+    log {
+      level error
+    }
+}
