@@ -39,16 +39,12 @@ services:
       - "TZ=${TZ}"
     restart: always
 
-  msmtpd:
-    image: crazymax/msmtpd:latest
-    container_name: librenms_msmtpd
-    env_file:
-      - "./msmtpd.env"
-    environment:
-      - "SMTP_USER=${SMTP_USER}"
-      - "SMTP_PASSWORD=${SMTP_PASSWORD}"
-      - "SMTP_FROM=${SMTP_USER}"
-    restart: always
+  # msmtpd:
+  #   image: crazymax/msmtpd:latest
+  #   container_name: librenms_msmtpd
+  #   env_file:
+  #     - "./msmtpd.env"
+  #   restart: always
 
   librenms:
     #image: librenms/librenms:latest
