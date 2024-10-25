@@ -11,6 +11,14 @@ snmp_v3_aes=<cryptosha>
 snmp_v2='["public"]'
 # If the switches live in a different domain than the server, change the next line
 search_domain=$domain
+# End set variables
+
+# msmtpd -- uncomment below if using email notifications
+# sudo docker compose exec --user librenms librenms lnms config:set email_smtp_host msmtpd
+# sudo docker compose exec --user librenms librenms lnms config:set email_smtp_port 2500
+# sudo docker compose exec --user librenms librenms lnms config:set email_auto_tls true
+# sudo docker compose exec --user librenms librenms lnms config:set email_backend smtp
+# sudo docker compose exec --user librenms librenms lnms config:set email_from $email_from
 
 
 sudo docker compose exec --user librenms librenms lnms config:cache
@@ -49,10 +57,3 @@ sudo docker compose exec --user librenms librenms lnms config:set oxidized.group
 sudo docker compose exec --user librenms librenms lnms config:set oxidized.reload_nodes true
 sudo docker compose exec --user librenms librenms lnms config:set oxidized.features.versioning true
 sudo docker compose exec --user librenms librenms lnms config:set oxidized.url http://oxidized.librenms_default:8888
-
-# msmtpd
-# sudo docker compose exec --user librenms librenms lnms config:set email_smtp_host msmtpd
-# sudo docker compose exec --user librenms librenms lnms config:set email_smtp_port 2500
-# sudo docker compose exec --user librenms librenms lnms config:set email_auto_tls true
-# sudo docker compose exec --user librenms librenms lnms config:set email_backend smtp
-# sudo docker compose exec --user librenms librenms lnms config:set email_from $email_from

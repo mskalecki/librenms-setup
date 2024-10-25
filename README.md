@@ -6,6 +6,10 @@ This repo is designed to guide you through setting up a fully featured LibreNMS 
 
 **WARNING: do NOT expose LibreNMS to incoming Internet traffic.**
 
+## Official Documentation
+- LibreNMS Official Docs: https://docs.librenms.org/
+- The GitHub repo for the official docker image. The Docker setup in this document is derived from their examples and uses their image as the base. https://github.com/librenms/docker
+
 ## Prerequisites
 
 This guide assumes requires two things:
@@ -85,6 +89,7 @@ NOTE: that guide also provides instructions for removing the unofficial Docker p
     2. Replace the `<librenms_fqdn>` placeholder with the fqdn corresponding to the DNS entry for the librenms server (eg: `librenms.demo.org`).
 
 ### Bring up the Docker Containers
+
 Run the following command to create and bring online the Docker containers for the first time.
 
 ```bash
@@ -98,6 +103,28 @@ This initial start-up will automatically do a few things:
 2. Containers with volumes mapped to mount points on the host will populate sub-directories and files in the `/var/librenms` directory.
 3. Create a fresh instance of LibreNMS accessible at `https://<librenms_fqdn>` (hopefully).
 
+## Configure initial LibreNMS settings
+
+Configuration settings that control how LibreNMS operates live in the database and can be configured through the Web GUI, the `lmns` cli tool, or a combination of the two. Long-time LibreNMS users will recognize that these configurations used to be made in a `config.php` file. That is still supported, but it's deprecated.
+
+1. Reconnect your ssh session to the librenms server if necessary.
+2. Modify the `init-lmns-config.sh` file with information specific to your environment:
+    1. Open the file for editting using
+
+        ```bash
+        sudo nano /var/librenms/init-lmns-config.sh
+        ```
+
+    2. Replace the placeholder variable assignments in the `# set variables` block to fit your environment.
+    3. Save and exit
+
+2. Ensure that you are in the `/var/librenms` directory and run the `init-lmns-config.sh` script:
+
+    ```bash
+    cd /var/librenms
+    sudo bash init-lmns-config.sh
+    ```
+
 ## Verify that LibreNMS is online and create the initial admin
 
 1. Navigate to `https://<librenms_fqdn>` (eg: `https://librenms.demo.org`) in a web browser.
@@ -105,6 +132,64 @@ This initial start-up will automatically do a few things:
     1. `librenms` is a reasonable username, but it can be anything that matches your organizations conventions.
     2. This account shouldn't be used for everyday access. It will be used for things that shouldn't be associated with Real People, like Oxidized's API access.
 3. Once the account is created, choose to "validate" the configuration.
-4. Login with the freshly created credentials, and ignore the handful of warnings and errors that you currently see, because we'll take care of them.
+4. Login with the freshly created credentials. Expect that some transient warnings, but there should not be any errors.
 
-## 
+## Configure Oxidized
+
+This repo contains an Oxidized config that works in my environments (Ruckus/Brocade `fastIron`, Cisco `ios`, and Juniper `junos`). Refer to the Oxidized GitHub for guidance specific to your environment.
+
+Official Documentation:
+
+- Oxidized GitHub repo: <https://github.com/ytti/oxidized?tab=readme-ov-file#index>
+- LibreNMS Oxidized integration documentation: <https://docs.librenms.org/Extensions/Oxidized/>
+
+### Steps to use the provided Oxidized Config
+
+1. In the Web GUI, generate an API token ( <https://docs.librenms.org/API/#tokens> )
+    1. Associate it with the initial admin account (`librenms` )
+    2. Put `Oxidized` in the description for future reference.
+
+2. Over-write the default Oxidized config file with the one provided by this repo:
+
+    ```bash
+    sudo cp ~/librenms-setup/config/oxidized/config /var/librenms/oxidized/
+    ```
+
+3. Modify the `oxidized/config` file with information specific to your environment:
+
+    1. Open the file for editting using
+
+        ```bash
+        sudo nano /var/librenms/.env
+        ```
+
+    2. Replace the `<switch_ro_user>` placeholder with the usernme for the read-only account you will put on your switches.
+    3. Replace the `<switch_password>` placeholder with the password for the read-only account you will put on your switches.
+    4. Replace the `<email_domain>` placeholder with your email domain. This does not need to be a real email address.
+    5. Replace the `<librenms_api_token>` placeholder with the token you created in step 1 of this section.
+    6. Save and exit
+
+## Upgrading
+
+Updating LibreNMS is done by pulling new images, tearing down the existing containers, and restarting them
+
+1. Get into the `/var/librenms` directory and Pull new images
+
+    ```bash
+    cd /var/librenms
+    sudo docker compose pull
+    ```
+
+    If none of the images have updates, stop and skip the rest of these steps
+
+2. Tear down the existing containers
+
+    ```bash
+    sudo docker compose down
+    ```
+
+3. Bring the services back up
+
+    ```bash
+    sudo docker compose up -d
+    ```

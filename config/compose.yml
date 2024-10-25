@@ -39,6 +39,7 @@ services:
       - "TZ=${TZ}"
     restart: always
 
+  # uncomment the block below if using email alerts
   # msmtpd:
   #   image: crazymax/msmtpd:latest
   #   container_name: librenms_msmtpd

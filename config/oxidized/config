@@ -1,5 +1,5 @@
 ---
-username: oxidized
+username: <switch_ro_user>
 password: <switch_password>
 model: junos
 resolve_dns: true
