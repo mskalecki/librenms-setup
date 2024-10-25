@@ -23,6 +23,7 @@ search_domain=$domain
 
 sudo docker compose exec --user librenms librenms lnms config:cache
 sudo docker compose exec --user librenms librenms lnms config:set own_hostname "$hostname.$domain"
+sudo docker compose exec --user librenms librenms lnms config:set base_url "https://$hostname.$domain"
 
 # Comment out the block below if not using snmp_v3
 sudo docker compose exec --user librenms librenms lnms config:set snmp.v3.0.authalgo "SHA"

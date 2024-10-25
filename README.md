@@ -108,21 +108,21 @@ This initial start-up will automatically do a few things:
 Configuration settings that control how LibreNMS operates live in the database and can be configured through the Web GUI, the `lmns` cli tool, or a combination of the two. Long-time LibreNMS users will recognize that these configurations used to be made in a `config.php` file. That is still supported, but it's deprecated.
 
 1. Reconnect your ssh session to the librenms server if necessary.
-2. Modify the `init-lmns-config.sh` file with information specific to your environment:
+2. Modify the `init-lnms-config.sh` file with information specific to your environment:
     1. Open the file for editting using
 
         ```bash
-        sudo nano /var/librenms/init-lmns-config.sh
+        sudo nano /var/librenms/init-lnms-config.sh
         ```
 
     2. Replace the placeholder variable assignments in the `# set variables` block to fit your environment.
     3. Save and exit
 
-2. Ensure that you are in the `/var/librenms` directory and run the `init-lmns-config.sh` script:
+2. Ensure that you are in the `/var/librenms` directory and run the `init-lnms-config.sh` script:
 
     ```bash
     cd /var/librenms
-    sudo bash init-lmns-config.sh
+    sudo bash init-lnss-config.sh
     ```
 
 ## Verify that LibreNMS is online and create the initial admin
@@ -132,7 +132,7 @@ Configuration settings that control how LibreNMS operates live in the database a
     1. `librenms` is a reasonable username, but it can be anything that matches your organizations conventions.
     2. This account shouldn't be used for everyday access. It will be used for things that shouldn't be associated with Real People, like Oxidized's API access.
 3. Once the account is created, choose to "validate" the configuration.
-4. Login with the freshly created credentials. Expect that some transient warnings, but there should not be any errors.
+4. Login with the freshly created credentials. Expect that some transient warnings and errors.
 
 ## Configure Oxidized
 
@@ -160,7 +160,7 @@ Official Documentation:
     1. Open the file for editting using
 
         ```bash
-        sudo nano /var/librenms/.env
+        sudo nano /var/librenms/oxidized/config
         ```
 
     2. Replace the `<switch_ro_user>` placeholder with the usernme for the read-only account you will put on your switches.
