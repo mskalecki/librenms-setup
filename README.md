@@ -43,5 +43,8 @@ NOTE: that guide also provides instructions for removing the unofficial Docker p
 git clone --single-branch --branch main https://github.com/mskalecki/librenms-setup.git
 cd librenms-setup
 chmod 700 setup.sh setup-oxidized.sh
-./setup.sh
+sudo ./setup.sh
 ```
+3. Modify the `.env` file with information specific to your environment:
+    1. Open the file for editting using `sudo nano /var/librenms/.env`
+    2. Replace the `<strong_password>` placeholder with a long and complex password. You should securely store it in case you need to manually access the database some time in the future.
