@@ -193,3 +193,36 @@ Updating LibreNMS is done by pulling new images, tearing down the existing conta
     ```bash
     sudo docker compose up -d
     ```
+
+## Replacing Expired or Expiring Entra ID Client Secrets
+
+If you set your OIDC client secret to have an expiration date (which is 6 month by default with Entra ID App registrations), you'll need to create a new secret in Entra ID, and set the value in LibreNMS's config.
+
+### Generate a new Client Secret in Entra ID
+1. Go to https://entra.microsoft.com and sign in with an account with sufficient Admin Roles.
+2. Navigate to **Applications** -> **App registrations**
+3. Open your *LibreNMS* app registration (you make have to switch from the **Owned Applications** tab to the **All applications** tab to see the app.
+4. In the **Manage** section, click on **Certificates & secrets**
+5. Click on **New client secret**, enter a description (e.g. "<librenms_fqdn> <date>"), choose an expiration, and click **Add**.
+6. Copy the **Value** (NOT Secret ID, which you don't need) and paste it temporarily in a text editor for later use. This value will never be show again in full. If you lose it before you're able to load it into LibreNMS, delete it and repeat the process to create another new one.
+
+### Add the new Client Secret to the LibreNMS config
+You can update the LibreNMS config to use the new client secret using either the web console or SSH. The SSH options is handy if you only use SSO to authenticate to the web console and are locked out, because the secret is already expired.
+#### Web Console
+1. Log into the LibreNMS web console.
+2. Click the **Gear** button in the top-right corner.
+3. Click **Global Settings***.
+4. Click **Authentication** -> **Socialite Settings**
+5. Paste the *Client secret value* that you copied from Entra ID into the **client_secret** field of the **microsoft** provider config.
+6. Test the SSO login in a different browser (or device) to verify that the new 
+#### SSH
+1. Use ssh to connect to the LibreNMS system's CLI.
+2. Navigate to the correct directory
+   ```bash
+   cd /var/librenms
+   ```
+4. Run the following command (where `<new_client_secret>` is replaced by the value copied Entra ID:
+   ```bash
+   sudo docker compose exec --user librenms librenms lnms config:set auth.socialite.configs.microsoft.client_secret <new_client_secret>
+   ```
+6. Test the SSO login on the web.
